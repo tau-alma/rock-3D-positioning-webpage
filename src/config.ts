@@ -12,7 +12,7 @@ export const Config = {
     url: "https://tau-alma.github.io/rock-3D-positioning-webpage",
     sourceUrl: "https://github.com/tau-alma/rock-3D-positioning-webpage",
     codeUrl: "https://github.com/tau-alma/rock-3D-positioning",
-    ogImage: `${base}/assets/images/ogImage.jpg`,
+    ogImage: `${base}/assets/images/ogImage.png`,
   },
 
   // ─── Authors ──────────────────────────────────────────────────────────────
