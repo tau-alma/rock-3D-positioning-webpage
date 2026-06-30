@@ -1,0 +1,228 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import StickyNav from "../components/StickyNav.astro";
+import BibTeX from "../components/BibTeX.astro";
+import Footer from "../components/Footer.astro";
+import DualSlider from "../components/DualSlider";
+import TabbedGallery from "../components/TabbedGallery";
+import { Config } from "../config";
+
+const { abstract, overviewVideo, dualSlider, experiments, acknowledgements } =
+  Config;
+
+type AcknowledgementPart =
+  | { type: "text"; value: string }
+  | { type: "link"; label: string; href: string };
+
+function linkifyPlainUrls(text: string): AcknowledgementPart[] {
+  const parts: AcknowledgementPart[] = [];
+  const tokens = text.split(/(\s+)/);
+
+  for (const token of tokens) {
+    if (!token) continue;
+
+    // Keep whitespace exactly as provided in the source text.
+    if (/^\s+$/.test(token)) {
+      parts.push({ type: "text", value: token });
+      continue;
+    }
+
+    const leading = token.match(/^[([{<"'`]+/)?.[0] ?? "";
+    const trailing = token.match(/[)\]}>"'`.,!?;:]+$/)?.[0] ?? "";
+    const core = token.slice(leading.length, token.length - trailing.length);
+
+    if (/^https?:\/\/\S+$/i.test(core)) {
+      if (leading) parts.push({ type: "text", value: leading });
+      parts.push({ type: "link", label: core, href: core });
+      if (trailing) parts.push({ type: "text", value: trailing });
+    } else {
+      parts.push({ type: "text", value: token });
+    }
+  }
+
+  return parts;
+}
+
+function linkifyAcknowledgements(text: string): AcknowledgementPart[] {
+  const parts: AcknowledgementPart[] = [];
+  const markdownLinkRegex = /\[([^\]]+)\]\(([^\s)]+)\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = markdownLinkRegex.exec(text)) !== null) {
+    const [fullMatch, label, href] = match;
+    const matchStart = match.index;
+
+    if (matchStart > lastIndex) {
+      parts.push(...linkifyPlainUrls(text.slice(lastIndex, matchStart)));
+    }
+
+    parts.push({ type: "link", label, href });
+    lastIndex = matchStart + fullMatch.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(...linkifyPlainUrls(text.slice(lastIndex)));
+  }
+
+  return parts;
+}
+
+const acknowledgementParts = linkifyAcknowledgements(acknowledgements ?? "");
+---
+
+<Layout>
+  <!-- Hero (above nav) -->
+  <Hero />
+
+  <!-- Sticky Nav -->
+  <StickyNav />
+
+  <!-- ─── Abstract ──────────────────────────────────────────────────────── -->
+  <section id="abstract" class="section">
+    <div class="container">
+      <p class="section-label">Abstract</p>
+      <p class="abstract-text">{abstract}</p>
+    </div>
+  </section>
+
+  <!-- ─── Experiments & Results ─────────────────────────────────────────── -->
+  <section id="experiments" class="section">
+    <div class="container">
+      <p class="section-label">Experiments &amp; Results</p>
+      <h2 class="section-title">Model Overview &amp; Experiment Showcase</h2>
+
+      <!-- 3a: Overview Video -->
+      <div class="subsection">
+        <h3 class="subsection-title">Segmentation Model Comparison</h3>
+        <div class="video-wrapper">
+          <video
+            autoplay
+            muted
+            loop
+            playsinline
+            controls
+            aria-label="Overview video of both segmentation models"
+          >
+            <source src={overviewVideo.webm} type="video/webm" />
+            <source src={overviewVideo.mp4} type="video/mp4" />
+          </video>
+        </div>
+        {
+          overviewVideo.caption && (
+            <p class="media-caption">{overviewVideo.caption}</p>
+          )
+        }
+      </div>
+
+      <!-- 3b: Dual Comparison Slider -->
+      <div class="subsection">
+        <h3 class="subsection-title">Frame-Level Comparison</h3>
+        <DualSlider
+          client:load
+          model1={dualSlider.model1}
+          model2={dualSlider.model2}
+          toggleLabels={dualSlider.toggleLabels}
+          caption={dualSlider.caption}
+        />
+      </div>
+
+      <!-- 3c: Experiment Tabs -->
+      <div class="subsection">
+        <h3 class="subsection-title">Per-Experiment Breakdown</h3>
+        <TabbedGallery client:load experiments={experiments} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Acknowledgements ─────────────────────────────────────────────── -->
+  {
+    acknowledgements?.trim() && (
+      <section id="acknowledgements" class="section">
+        <div class="container">
+          <p class="section-label">Acknowledgements</p>
+          <p class="abstract-text">
+            {acknowledgementParts.map((part) =>
+              part.type === "link" ? (
+                <a
+                  href={part.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-link"
+                >
+                  <span class="inline-link-text">{part.label}</span>
+                </a>
+              ) : (
+                part.value
+              ),
+            )}
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ─── BibTeX ─────────────────────────────────────────────────────────── -->
+  <section id="bibtex" class="section">
+    <div class="container">
+      <p class="section-label">Citation</p>
+      <h2 class="section-title">BibTeX</h2>
+      <BibTeX />
+    </div>
+  </section>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────────── -->
+  <Footer />
+</Layout>
+
+<style>
+  .abstract-text {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text);
+    max-width: 720px;
+  }
+
+  .subsection {
+    margin-bottom: 3.5rem;
+  }
+
+  .subsection:last-child {
+    margin-bottom: 0;
+  }
+
+  .subsection-title {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .media-caption {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .inline-link {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .inline-link-text {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .inline-link:hover {
+    color: var(--primary-hover);
+  }
+</style>

@@ -1,0 +1,121 @@
+---
+import { Config } from '../config';
+const { bibtex } = Config;
+---
+
+<div class="bibtex-wrapper">
+  <div class="bibtex-header">
+    <span class="bibtex-label">BibTeX</span>
+    <button class="copy-btn" id="copy-bibtex" aria-label="Copy BibTeX to clipboard">
+      <span class="copy-icon" id="copy-icon" aria-hidden="true">
+        <!-- Copy icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+      </span>
+      <span id="copy-label">Copy</span>
+    </button>
+  </div>
+  <pre class="bibtex-block" id="bibtex-content">{bibtex}</pre>
+</div>
+
+<script is:inline>
+  const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+  const btn = document.getElementById('copy-bibtex');
+  const content = document.getElementById('bibtex-content');
+  const label = document.getElementById('copy-label');
+  const icon = document.getElementById('copy-icon');
+
+  if (btn && content) {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(content.textContent || '');
+        label.textContent = 'Copied!';
+        icon.innerHTML = checkIcon;
+        btn.classList.add('copied');
+        setTimeout(() => {
+          label.textContent = 'Copy';
+          icon.innerHTML = copyIcon;
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch {
+        // Fallback
+        const range = document.createRange();
+        range.selectNode(content);
+        window.getSelection()?.removeAllRanges();
+        window.getSelection()?.addRange(range);
+        document.execCommand('copy');
+        window.getSelection()?.removeAllRanges();
+        label.textContent = 'Copied!';
+        setTimeout(() => { label.textContent = 'Copy'; }, 2000);
+      }
+    });
+  }
+</script>
+
+<style>
+.bibtex-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.bibtex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1rem;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+
+.bibtex-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.25rem 0.625rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.copy-btn:hover {
+  color: var(--text);
+  background-color: var(--bg);
+  border-color: var(--text-muted);
+}
+
+.copy-btn.copied {
+  color: #22c55e;
+  border-color: #22c55e;
+}
+
+.bibtex-block {
+  margin: 0;
+  padding: 1.5rem;
+  background-color: var(--bg-subtle);
+  font-family: 'Courier New', 'Fira Code', monospace;
+  font-size: 0.825rem;
+  line-height: 1.8;
+  overflow-x: auto;
+  color: var(--text);
+  white-space: pre;
+  tab-size: 2;
+}
+</style>

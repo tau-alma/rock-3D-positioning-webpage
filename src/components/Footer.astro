@@ -1,0 +1,84 @@
+---
+import { Config } from "../config";
+const { license, authors, site } = Config;
+---
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-license-group">
+        <p class="footer-copy">
+          &copy; {license.year}
+          {authors.map((a) => a.name).join(", ")}
+        </p>
+        <p class="footer-license-note">
+          The thesis and the media on this project page is licensed under
+          <a href={license.url} target="_blank" rel="noopener noreferrer"
+            >{license.name}</a
+          >.<br />
+          Check
+          <a href={site.codeUrl} target="_blank" rel="noopener noreferrer"
+            >the code repository</a
+          >
+          and
+          <a
+            href="https://hf.co/collections/akahukas/rock-3d-positioning"
+            target="_blank"
+            rel="noopener noreferrer">the Hugging Face repositories</a
+          > for their respective licenses.
+        </p>
+      </div>
+      <p class="footer-built">
+        Built with
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer"
+          >Astro</a
+        >
+        · <a href={site.sourceUrl} target="_blank" rel="noopener noreferrer"
+          >Source</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    align-items: start;
+  }
+
+  .footer-copy,
+  .footer-built,
+  .footer-license-note {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .footer-license-group {
+    min-width: 0;
+  }
+
+  .footer-license-note {
+    margin-top: 0.2rem;
+  }
+
+  .footer-built {
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  @media (max-width: 540px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .footer-built {
+      text-align: center;
+    }
+  }
+</style>

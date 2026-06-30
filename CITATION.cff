@@ -1,0 +1,48 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Evaluating Rock Position Estimation Pipeline Using 3D
+  Sensors for Excavation Task
+message: >-
+  If you use this research or refer to the project page,
+  please cite the thesis as the primary work.
+type: software
+authors:
+  - family-names: Hakamäki
+    given-names: Saku
+    affiliation: 'Tampere University, Autonomous Mobile Machines Group'
+identifiers:
+  - type: url
+    value: 'https://urn.fi/URN:NBN:fi:tuni-202604274316'
+    description: The permanent address of the Master's Thesis.
+repository-code: 'https://github.com/tau-alma/rock-3D-positioning-webpage/'
+url: 'https://github.com/tau-alma/rock-3D-positioning-webpage/'
+keywords:
+  - position estimation pipeline
+  - sensor fusion
+  - LiDAR
+  - excavator
+  - rock-picking
+  - ROS 2
+  - YOLO26
+  - Segment Anything Model 2 (SAM 2)
+license:
+  - CC-BY-4.0
+version: 1.0.0
+date-released: '2026-04-27'
+preferred-citation:
+  type: thesis
+  authors:
+    - family-names: Hakamäki
+      given-names: Saku
+  title: >-
+    Evaluating Rock Position Estimation Pipeline Using 3D Sensors for Excavation
+    Task
+  institution:
+    name: Tampere University
+  department: Faculty of Information Technology and Communication Sciences
+  thesis-type: "Master's Thesis"
+  year: 2026
+  url: https://urn.fi/URN:NBN:fi:tuni-202604274316
