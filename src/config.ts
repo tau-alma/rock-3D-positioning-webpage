@@ -8,7 +8,7 @@ export const Config = {
     shortTitle:
       "Evaluating Rock Position Estimation Pipeline Using 3D Sensors for Excavation Task",
     description:
-      "A master's thesis evaluating a rock position estimation pipeline using 3D sensors during excavator rock-picking task, comparing segmentation models with real-world data.",
+      "Master's thesis evaluating rock position estimation pipeline using 3D sensors during rock-picking task of a real excavator.",
     url: "https://tau-alma.github.io/rock-3D-positioning-webpage",
     sourceUrl: "https://github.com/tau-alma/rock-3D-positioning-webpage",
     codeUrl: "https://github.com/tau-alma/rock-3D-positioning",
